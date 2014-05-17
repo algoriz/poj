@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="input">
+      <UniqueIdentifier>{12795191-605e-4a32-94d5-f9b3a119db88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="output">
+      <UniqueIdentifier>{d1e86cfc-0739-4115-9174-11255dc231b5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="1002.cc">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="1060.cc">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cc">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="1059.cc">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="1093.cc">
+      <Filter>source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="input\1002.txt">
+      <Filter>input</Filter>
+    </Text>
+    <Text Include="input\1059.txt">
+      <Filter>input</Filter>
+    </Text>
+    <Text Include="input\1060.txt">
+      <Filter>input</Filter>
+    </Text>
+    <Text Include="input\1093.txt">
+      <Filter>input</Filter>
+    </Text>
+    <Text Include="output\1002.txt">
+      <Filter>output</Filter>
+    </Text>
+    <Text Include="output\1059.txt">
+      <Filter>output</Filter>
+    </Text>
+    <Text Include="output\1060.txt">
+      <Filter>output</Filter>
+    </Text>
+    <Text Include="output\1093.txt">
+      <Filter>output</Filter>
+    </Text>
+  </ItemGroup>
+</Project>
