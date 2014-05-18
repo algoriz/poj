@@ -20,7 +20,7 @@ private:
     };
 
 public:
-    bool read(istream& input){
+    bool read_paragraph(istream& input){
         string line;
         getline(input, line);
         int k = atoi(line.c_str());
@@ -28,21 +28,56 @@ public:
             return false;
         }
 
-        K = k;
+        fmt_width = k;
         words.clear();
         do{
             getline(input, line);
         } while (tokenize(line, words) != 0);
 
-        init_dptables();
+        init();
         return true;
     }
 
     void pretty_print(ostream& output){
-        opt& pb = PB(0, words.size());
+        pretty_print(output, 0, words.size());
+        output << '\n';
     }
 
 private:
+    void pretty_print(ostream& output, int start, int end){
+        opt& pb = PB(start, end);
+        if (pb.lnbreak != end){
+            pretty_print(output, start, pb.lnbreak);
+            start = pb.lnbreak;
+        }
+        print_line(output, start, end);
+    }
+
+    void print_line(ostream& output, int start, int end){
+        string* wd = &(words[start]);
+        output << *wd++;
+
+        /* Inserting spaces before other words */
+        int count = end - start - 1;
+        if (count != 0){
+            int sp = fmt_width - len(start, end);
+            int avg = 1 + sp / count; /* average spaces needed */
+            int m = count - (sp % count);
+            sp = avg;
+            for (int i = 0; i < m; ++i){
+                output.write(spaces.c_str(), sp);
+                output << *wd++;
+            }
+            ++sp;
+            for (int i = m; i < count; ++i){
+                output.write(spaces.c_str(), sp);
+                output << *wd++;
+            }
+        }
+
+        output << '\n';
+    }
+
     /* Test whether the given character is a separator.
      * As stated in the problem description, words are consist of characters 
      * with ASCII codes between 33 and 126, thus characters with ASCII codes
@@ -71,22 +106,22 @@ private:
         return words.size() - wc;
     }
 
-    static int line_badness(int K, int wdcount, int wdlength){
+    static int line_badness(int fmt_width, int wdcount, int wdlength){
         int n = wdcount - 1;
         if (n == 0){
-            return 500;
+            return wdlength == fmt_width ? 0 : 500;
         }
 
         /* extra spaces needed */
-        int sp = K - wdlength;
+        int sp = fmt_width - wdlength;
         int avg = sp / n;
         int odds = sp % n;
         /* (n - odds) * avg * avg + odds * (avg + 1) * (avg + 1) */
         return n*avg*avg + 2*odds*avg + odds;
     }
 
-    /* The total length of words in range [start, end) as a single line without
-     * inserting extra spaces.
+    /* The length of the line composed of words within range [start, end).
+     * A single space as separator is counted.
      */
     int len(int start, int end){
         int& wl = wltable[addr(start, end)];
@@ -100,14 +135,14 @@ private:
     }
 
     bool is_valid_line(int start, int end){
-        return start < end && len(start, end) <= K;
+        return start < end && len(start, end) <= fmt_width;
     }
 
     /* The line badness value for words in range [start, end) */
     int LB(int start, int end){
         int& lb = lbtable[addr(start, end)];
         if (lb == -1){
-            lb = line_badness(K, end - start, len(start, end));
+            lb = line_badness(fmt_width, end - start, len(start, end));
         }
         return lb;
     }
@@ -125,7 +160,11 @@ private:
                 int min_pb = 0x7FFFFFFF;
                 for (int b = end - 1; b > start && is_valid_line(b, end); --b){
                     int pb = PB(start, b).badness + LB(b, end);
-                    if (pb < min_pb){
+                    /* Note that operator <= is used here
+                     * Among two solutions with same badness, choose the one that
+                     * has the minor gap at the first position where two gap length differs
+                     */
+                    if (pb <= min_pb){
                         lnb = b;
                         min_pb = pb;
                     }
@@ -137,7 +176,8 @@ private:
         return pb;
     }
 
-    void init_dptables(){
+    void init(){
+        spaces.assign(fmt_width, ' ');
         N = (int)words.size();
         
         int n = N*(N + 1) / 2;
@@ -158,10 +198,13 @@ private:
     }
 
 private:
-    /* length of line */
-    int K;
+    /* Target width of formated text */
+    int fmt_width;
     vector<string> words;
-    
+
+    /* fmt_width spaces */
+    string spaces;
+
     /* DP tables */
     int N;
     vector<int> wlbuf;
@@ -174,7 +217,7 @@ private:
 
 int poj1093(std::istream& input, std::ostream& output){
     formatter fmt;
-    while (fmt.read(input)){
+    while (fmt.read_paragraph(input)){
         fmt.pretty_print(output);
     }
     return 0;
