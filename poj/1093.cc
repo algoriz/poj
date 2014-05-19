@@ -1,5 +1,16 @@
 /* See the problem description:
  * http://poj.org/problem?id=1093
+ * 
+ * Key Observation:
+ * Let
+ *   PB(a, b) = Optimal paragraph badness for words within range [a, b)
+ *   LB(a, b) = Optimal line badness for words within range [a, b)
+ * then we have
+ *   PB(a, b) = min{LB(a, j) + PB(j, b) | a < j <= b, len(a,j) <= K}
+ *   (forward DP)
+ * or
+ *   PB(a, b) = min{PB(a, j) + LB(j, b) | a <= j < b, len(j,b) <= K}
+ *   (backward DP)
  */
 #include <iostream>
 #include <vector>
@@ -46,11 +57,10 @@ public:
 private:
     void pretty_print(ostream& output, int start, int end){
         opt& pb = PB(start, end);
+        print_line(output, start, pb.lnbreak);
         if (pb.lnbreak != end){
-            pretty_print(output, start, pb.lnbreak);
-            start = pb.lnbreak;
+            pretty_print(output, pb.lnbreak, end);
         }
-        print_line(output, start, end);
     }
 
     void print_line(ostream& output, int start, int end){
@@ -59,7 +69,7 @@ private:
 
         /* Inserting spaces before other words */
         int count = end - start - 1;
-        if (count != 0){
+        if (count > 0){
             int sp = fmt_width - len(start, end);
             int avg = 1 + sp / count; /* average spaces needed */
             int m = count - (sp % count);
@@ -97,7 +107,6 @@ private:
             
             if (gb >= end){ break; }
             ge = gb + 1;
-            if (ge >= end){ break; }
 
             while (!issepa(*ge)){ ++ge; }
             words.push_back(std::string(gb, ge-gb));
@@ -147,31 +156,33 @@ private:
         return lb;
     }
 
-    /* The paragraph badness value for words in range [start, end) */
+    /* The optimal paragraph badness value for words in range [start, end) */
     opt& PB(int start, int end){
         opt& pb = pbtable[addr(start, end)];
         if (pb.empty()){
+            int lnb = end;
+            int min_pb = 0x7FFFFFFF;
+
             if (is_valid_line(start, end)){
-                pb.badness = LB(start, end);
+                min_pb = LB(start, end);
+                pb.badness = min_pb;
                 pb.lnbreak = end;
             }
-            else {
-                int lnb = end - 1;
-                int min_pb = 0x7FFFFFFF;
-                for (int b = end - 1; b > start && is_valid_line(b, end); --b){
-                    int pb = PB(start, b).badness + LB(b, end);
-                    /* Note that operator <= is used here
-                     * Among two solutions with same badness, choose the one that
-                     * has the minor gap at the first position where two gap length differs
-                     */
-                    if (pb <= min_pb){
-                        lnb = b;
-                        min_pb = pb;
-                    }
+            
+            for (int b = start + 1; b < end && is_valid_line(start, b); ++b){
+                int pb = LB(start, b) + PB(b, end).badness;
+                /* Note that operator <= is used.
+                 * Among two solutions with same badness, we choose the one
+                 * that has a minor gap at the first position where two gap
+                 * length differs.
+                 */
+                if (pb <= min_pb){
+                    lnb = b;
+                    min_pb = pb;
                 }
-                pb.badness = min_pb;
-                pb.lnbreak = lnb;
             }
+            pb.badness = min_pb;
+            pb.lnbreak = lnb;
         }
         return pb;
     }
