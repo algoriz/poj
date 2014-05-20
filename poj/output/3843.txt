@@ -1,0 +1,3 @@
+this(is(a,tiny),tree)
+a(b(f(a,4),b(3,f)),f(2,6))
+z(zz(zzzz(zz,z),3),zzzz(2,5))

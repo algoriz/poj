@@ -28,6 +28,9 @@
     <ClCompile Include="1093.cc">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="3843.cc">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="input\1002.txt">
@@ -53,6 +56,9 @@
     </Text>
     <Text Include="output\1093.txt">
       <Filter>output</Filter>
+    </Text>
+    <Text Include="input\3843.txt">
+      <Filter>input</Filter>
     </Text>
   </ItemGroup>
 </Project>

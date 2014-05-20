@@ -11,6 +11,6 @@
 
 int main(int argc, char** argv)
 {
-    RUNPOJ(1093);
+    RUNPOJ(3843);
     return 0;
 }

@@ -81,6 +81,7 @@
     <ClCompile Include="1059.cc" />
     <ClCompile Include="1060.cc" />
     <ClCompile Include="1093.cc" />
+    <ClCompile Include="3843.cc" />
     <ClCompile Include="main.cc" />
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +89,7 @@
     <Text Include="input\1059.txt" />
     <Text Include="input\1060.txt" />
     <Text Include="input\1093.txt" />
+    <Text Include="input\3843.txt" />
     <Text Include="output\1002.txt" />
     <Text Include="output\1059.txt" />
     <Text Include="output\1060.txt" />
