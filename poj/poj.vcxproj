@@ -94,6 +94,7 @@
     <Text Include="output\1059.txt" />
     <Text Include="output\1060.txt" />
     <Text Include="output\1093.txt" />
+    <Text Include="output\3843.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

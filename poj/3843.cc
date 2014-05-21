@@ -1,160 +1,190 @@
+/* See the problem description:
+ * http://poj.org/problem?id=3843
+ */
+
 #include <iostream>
 #include <set>
 #include <string>
 #include <vector>
-#include <algorithm>
+
 using namespace std;
 
-bool issepa(int ch){
-    return ch < 'a' || ch > 'z';
-}
-bool isword(int ch){
-    return ch >= 'a' && ch <= 'z';
-}
-
-class tree_compresser {
+class expr_eliminator {
 public:
-    struct node_t {
+    struct expr_t {
+        size_t hash_code;
+        int    reg_index;
         const char* key;
-        const char* begin;
-        const char* end;
-        node_t* left;
-        node_t* right;
-        int    index;
-        
-        const char* read_key(const char* s){
-            left = right = 0;
-            key = s;
-            while (isword(*s)){ s++; }
-            return begin = end = s;
-        }
-        
-        size_t key_length() const {
-            return begin - key;
-        }
+        size_t keysize;
+        size_t length;
+        expr_t* left;       /* left child */
+        expr_t* right;      /* right child */
 
-        size_t length() const {
-            return end - key;
+        const char* read_key(const char* s){
+            key = s;
+            left = right = 0;
+            hash_code = 0;
+            keysize = 0;
+            while (isword(*s)){
+                hash_code <<= 8;
+                hash_code |= (size_t)*s++;
+                ++keysize;
+            }
+            return s;
         }
     };
 
-    void read(const string& input){
-        tree_str = input;
-        subtrees.clear();
-        subtrees.reserve(1000);
-
-        /* First pass, get all nodes */
-        node_t node;
-        for (const char* p = tree_str.c_str(); *p;){
-            p = node.read_key(p);
-            node.index = subtrees.size();
-            subtrees.push_back(node);
-            while (*p && issepa(*p)){ ++p; }
+    class expr_hashset{
+    public:
+        expr_hashset(){
+            set_size(50000);
         }
 
-        /* Second pass, get subtree boundaries */
-        vector<node_t*> sp;
-        sp.reserve(subtrees.size());
-        node_t* current = &(subtrees[0]);
-        for (const char* p = current->begin; *p; ){
-            switch (*p)
-            {
-            case '(':
-                sp.push_back(current);
-                current->left = current + 1;
-                ++current;
-                p = current->begin;
-                break;
-            case ')':
-                if (current->begin == p){
-                    current->end = p;
-                }
-                sp.back()->end = ++p;
-                sp.pop_back();
-                break;
-            case ',':
-                if (current->begin == p){
-                    current->end = p;
-                }
-                sp.back()->right = ++current;
-                p = current->begin;
-                break;
-            default:
-                ++p; /* Should never reach here */
+        void set_size(size_t n){
+            size = n;
+            if (size > bucket.size()){
+                vector<expr_t*> tmp;
+                bucket.assign(size, tmp);
             }
         }
+
+        void clear(){
+            for (size_t i = 0; i < size; ++i){
+                bucket[i].clear();
+            }
+        }
+
+        expr_t* find(expr_t* expr) const {
+            size_t index = (expr->hash_code + expr->length) % size;
+            const vector<expr_t*>& l = bucket[index];
+            for (index = 0; index < l.size(); ++index){
+                expr_t* it = l[index];
+                if (it->length == expr->length
+                    && memcmp(it->key, expr->key, expr->length) == 0){
+                    return it;
+                }
+            }
+            return 0;
+        }
+
+        void insert(expr_t* expr) {
+            size_t index = (expr->hash_code + expr->length) % size;
+            bucket[index].push_back(expr);
+        }
+
+    private:
+        size_t size;
+        vector<vector<expr_t*>> bucket;
+    };
+
+    static bool issepa(int ch){ return ch < 'a' || ch > 'z'; }
+
+    static bool isword(int ch){ return ch >= 'a' && ch <= 'z'; }
+
+    expr_eliminator(){
+        expr_pool.assign(50000, expr_t());
+        next_alloc = &(expr_pool[0]);
+        str.reserve(360000); // 50000 * (4+3) = 350000
     }
 
-    void write_compressed(string& dst){
-        dst.clear();
-        dst.reserve(subtrees[0].length());
+    size_t expr_size() const {
+        return next_alloc - &expr_pool[0];
+    }
 
-        print_index = 0;
-        reusable_subtrees.clear();
-        print(&subtrees[0], dst);
+    void clear() {
+        str.clear();
+        next_alloc = &expr_pool[0];
+    }
+
+    void read_expr(istream& input){
+        clear();
+        getline(input, str);
+
+        expr_root = alloc_expr();
+        parse(expr_root, str.c_str());
+    }
+
+    void write_expr(ostream& output){
+        reg_index = 0;
+        expr_reg.set_size(expr_size());
+        expr_reg.clear();
+        print(expr_root, output);
+        output << '\n';
     }
 
 private:
-    void print(node_t* subtree, string& output){
-        set<node_t, node_pred>::iterator it = reusable_subtrees.find(*subtree);
-        if (it != reusable_subtrees.end()){
-            char buf[16];
-            _itoa(it->index, buf, 10);
-            output += buf;
+    expr_t* alloc_expr(){ return next_alloc++; }
+
+    void alloc_reset(){ next_alloc = &expr_pool[0]; }
+
+    /* Recursive expression parser */
+    const char* parse(expr_t* expr, const char* src){
+        src = expr->read_key(src);
+        if (*src == '('){
+            expr_t* left = alloc_expr();
+            src = parse(left, ++src);
+            expr_t* right = alloc_expr();
+            src = parse(right, ++src);
+            
+            expr->left = left;
+            expr->right = right;
+            expr->length = ++src - expr->key;
+            
+            /* hash(expr) = hash(root) XOR hash(l-child) XOR hash(r-child) XOR (-length)
+             */
+            expr->hash_code ^= left->hash_code ^ right->hash_code;
         }
         else {
-            int index = ++print_index;
-            output.append(subtree->key, subtree->key_length());
-
-            if (subtree->left){
-                output.append(1, '(');
-                print(subtree->left, output);
-                output.append(1, ',');
-                print(subtree->right, output);
-                output.append(1, ')');
-            }
-
-            node_t printed_node = *subtree;
-            printed_node.index = index;
-            reusable_subtrees.insert(printed_node);
+            expr->length = src - expr->key;
         }
+        return src;
     }
 
-    struct node_pred {
-        bool operator() (const node_t& n1, const node_t& n2) const {
-            int len1 = n1.length();
-            int len2 = n2.length();
-            if (len1 < len2){
-                return true;
-            }
-            else if (len1 > len2){
-                return false;
-            }
-            return memcmp(n1.key, n2.key, len1) < 0;
+    void print(expr_t* expr, ostream& output){
+        expr_t* it = expr_reg.find(expr);
+        if (it != 0){
+            output << it->reg_index;
         }
-    };
+        else {
+            int index = ++reg_index;
+            output.write(expr->key, expr->keysize);
 
-    string tree_str;
+            if (expr->left){
+                output << '(';
+                print(expr->left, output);
+                output << ',';
+                print(expr->right, output);
+                output << ')';
+            }
 
-    /* Table of subtrees */
-    vector<node_t> subtrees;
+            expr->reg_index = index;
+            expr_reg.insert(expr);
+        }
+    }
     
-    int print_index;
-    set<node_t, node_pred> reusable_subtrees;
+    string str;
+
+    expr_t* next_alloc;
+    vector<expr_t> expr_pool;
+    expr_t* expr_root;
+
+    int reg_index;
+    expr_hashset expr_reg;
 };
 
 int poj3843(std::istream& input, std::ostream& output){
     string line;
-    line.reserve(102400);
     getline(input, line);
     int count = atoi(line.c_str());
 
-    tree_compresser pd;
+    expr_eliminator eliminator;
     for (int i = 0; i < count; ++i){
-        getline(input, line);
-        pd.read(line.c_str());
-        pd.write_compressed(line);
-        output << line << '\n';
+        eliminator.read_expr(input);
+        eliminator.write_expr(output);
+
+        if (i == count - 1){
+            break;
+        }
     }
     return 0;
 }

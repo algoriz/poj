@@ -60,5 +60,8 @@
     <Text Include="input\3843.txt">
       <Filter>input</Filter>
     </Text>
+    <Text Include="output\3843.txt">
+      <Filter>output</Filter>
+    </Text>
   </ItemGroup>
 </Project>
