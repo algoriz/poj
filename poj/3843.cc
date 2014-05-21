@@ -13,7 +13,7 @@ class expr_eliminator {
 public:
     struct expr_t {
         size_t hash_code;
-        int    reg_index;
+        int    reg_index;   /* short code for current expression */
         const char* key;
         size_t keysize;
         size_t length;
@@ -84,7 +84,12 @@ public:
     expr_eliminator(){
         expr_pool.assign(50000, expr_t());
         next_alloc = &(expr_pool[0]);
-        str.reserve(360000); // 50000 * (4+3) = 350000
+
+        /* Estimate string size:
+         * Max. 50000 nodes, 4 bytes for key and 3 bytes for "(,)" per node
+         *   50000 * (4+3) = 350000
+         */
+        str.reserve(350000);
     }
 
     size_t expr_size() const {
@@ -117,7 +122,7 @@ private:
 
     void alloc_reset(){ next_alloc = &expr_pool[0]; }
 
-    /* Recursive expression parser */
+    /* Recursive descent expression parser */
     const char* parse(expr_t* expr, const char* src){
         src = expr->read_key(src);
         if (*src == '('){
@@ -130,7 +135,7 @@ private:
             expr->right = right;
             expr->length = ++src - expr->key;
             
-            /* hash(expr) = hash(root) XOR hash(l-child) XOR hash(r-child) XOR (-length)
+            /* hash(expr) = hash(root) XOR hash(l-child) XOR hash(r-child)
              */
             expr->hash_code ^= left->hash_code ^ right->hash_code;
         }
@@ -140,6 +145,7 @@ private:
         return src;
     }
 
+    /* Recursive descent expression printer */
     void print(expr_t* expr, ostream& output){
         expr_t* it = expr_reg.find(expr);
         if (it != 0){
@@ -157,19 +163,27 @@ private:
                 output << ')';
             }
 
+            /* Only after current expression is completed printed(evaluated),
+             * then we remember it
+             */
             expr->reg_index = index;
             expr_reg.insert(expr);
         }
     }
     
+    /* The string representation of the expression */
     string str;
 
-    expr_t* next_alloc;
+    /* memory pool to speed up allocation */
     vector<expr_t> expr_pool;
+    expr_t* next_alloc;
+
+    /* root of expression */
     expr_t* expr_root;
 
-    int reg_index;
+    /* Registers for printed(evaluated) expressions */
     expr_hashset expr_reg;
+    int reg_index;
 };
 
 int poj3843(std::istream& input, std::ostream& output){
