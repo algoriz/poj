@@ -48,6 +48,6 @@ int file_compare(const char* file1, const char* file2){
 
 int main(int argc, char** argv)
 {
-    RUNPOJ(3843);
+    RUNPOJ(3842);
     return 0;
 }
