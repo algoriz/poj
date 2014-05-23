@@ -38,6 +38,9 @@
     <ClCompile Include="3842.cc">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="3844.cc">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="input\1002.txt">
@@ -75,6 +78,12 @@
     </Text>
     <Text Include="output\3842.txt">
       <Filter>output</Filter>
+    </Text>
+    <Text Include="output\3844.txt">
+      <Filter>output</Filter>
+    </Text>
+    <Text Include="input\3844.txt">
+      <Filter>input</Filter>
     </Text>
   </ItemGroup>
 </Project>

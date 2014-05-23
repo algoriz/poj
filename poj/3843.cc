@@ -195,10 +195,6 @@ int poj3843(std::istream& input, std::ostream& output){
     for (int i = 0; i < count; ++i){
         eliminator.read_expr(input);
         eliminator.write_expr(output);
-
-        if (i == count - 1){
-            break;
-        }
     }
     return 0;
 }

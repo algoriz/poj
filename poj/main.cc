@@ -14,8 +14,9 @@
     int poj##NUM(std::istream&, std::ostream&);\
     const char* input = "input\\"#NUM".txt";\
     const char* output = "output\\"#NUM".mine.txt";\
-    poj##NUM(std::ifstream(input), std::ofstream(output));\
-    int ln = file_compare(input, output);\
+    const char* keys = "output\\"#NUM".txt";\
+    poj##NUM(std::ifstream(input), std::ofstream(output, std::ios::trunc));\
+    int ln = file_compare(keys, output);\
     if (ln == 0){\
         std::cout << "POJ #" #NUM " PASSED\n";\
     } else{\
@@ -29,11 +30,11 @@ int file_compare(const char* file1, const char* file2){
     std::ifstream f2(file2);
 
     if (!f1.is_open() || !f2.is_open()){
-        return false;
+        return 1;
     }
 
     std::string line1, line2;
-    for (int ln = 0; !f1.eof() && !f2.eof(); ++ln){
+    for (int ln = 1; !f1.eof() && !f2.eof(); ++ln){
         line1.clear();
         line2.clear();
         std::getline(f1, line1);
@@ -48,6 +49,6 @@ int file_compare(const char* file1, const char* file2){
 
 int main(int argc, char** argv)
 {
-    RUNPOJ(3842);
+    RUNPOJ(3844);
     return 0;
 }
