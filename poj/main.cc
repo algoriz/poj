@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <ctime>
 
 #ifdef _DEBUG
 #define RUNPOJ(NUM) {\
@@ -15,12 +16,16 @@
     const char* input = "input\\"#NUM".txt";\
     const char* output = "output\\"#NUM".mine.txt";\
     const char* keys = "output\\"#NUM".txt";\
+    clock_t t = clock();\
     poj##NUM(std::ifstream(input), std::ofstream(output, std::ios::trunc));\
+    t = clock() - t;\
+    t *= 1000;\
+    t /= CLOCKS_PER_SEC;\
     int ln = file_compare(keys, output);\
     if (ln == 0){\
-        std::cout << "POJ #" #NUM " PASSED\n";\
+        std::cout << "POJ #" #NUM " PASSED, running time: " << t << "ms\n";\
     } else{\
-        std::cout << "POJ #" #NUM " WRONG ANSWER (case line: " << ln << ")\n";\
+        std::cout << "POJ #" #NUM " WRONG ANSWER (case line: " << ln << "), running time: " << t << "ms\n";\
     }\
 }
 #endif
