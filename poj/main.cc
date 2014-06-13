@@ -30,6 +30,21 @@
 }
 #endif
 
+#define RUNPOJ_FILE(NUM, input, output, keys) {\
+    int poj##NUM(std::istream&, std::ostream&);\
+    clock_t t = clock();\
+    poj##NUM(std::ifstream(input), std::ofstream(output, std::ios::trunc));\
+    t = clock() - t;\
+    t *= 1000;\
+    t /= CLOCKS_PER_SEC;\
+    int ln = file_compare(keys, output);\
+    if (ln == 0){\
+        std::cout << "POJ #" #NUM " PASSED, running time: " << t << "ms\n";\
+    } else{\
+        std::cout << "POJ #" #NUM " WRONG ANSWER (case line: " << ln << "), running time: " << t << "ms\n";\
+    }\
+}
+
 int file_compare(const char* file1, const char* file2){
     std::ifstream f1(file1);
     std::ifstream f2(file2);
@@ -54,6 +69,11 @@ int file_compare(const char* file1, const char* file2){
 
 int main(int argc, char** argv)
 {
-    RUNPOJ(3844);
+    if (argc == 4){
+        RUNPOJ_FILE(4054, argv[1], argv[2], argv[3]);
+    }
+    else{
+        RUNPOJ(4054);
+    }
     return 0;
 }

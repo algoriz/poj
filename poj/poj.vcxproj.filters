@@ -41,6 +41,9 @@
     <ClCompile Include="3844.cc">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="4054.cc">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="input\1002.txt">
