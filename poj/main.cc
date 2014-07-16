@@ -45,6 +45,16 @@
     }\
 }
 
+#define RUN(NUM) do \
+    {\
+        if (argc == 4){\
+            RUNPOJ_FILE(NUM, argv[1], argv[2], argv[3]);\
+        }\
+        else{\
+            RUNPOJ(NUM);\
+        }\
+    } while (false)
+
 int file_compare(const char* file1, const char* file2){
     std::ifstream f1(file1);
     std::ifstream f2(file2);
@@ -69,11 +79,6 @@ int file_compare(const char* file1, const char* file2){
 
 int main(int argc, char** argv)
 {
-    if (argc == 4){
-        RUNPOJ_FILE(4054, argv[1], argv[2], argv[3]);
-    }
-    else{
-        RUNPOJ(4054);
-    }
+    RUN(1684);
     return 0;
 }

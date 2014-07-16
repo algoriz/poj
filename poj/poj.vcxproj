@@ -81,6 +81,7 @@
     <ClCompile Include="1059.cc" />
     <ClCompile Include="1060.cc" />
     <ClCompile Include="1093.cc" />
+    <ClCompile Include="1684.cc" />
     <ClCompile Include="3842.cc" />
     <ClCompile Include="3843.cc" />
     <ClCompile Include="3844.cc" />
