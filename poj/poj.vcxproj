@@ -85,6 +85,7 @@
     <ClCompile Include="3842.cc" />
     <ClCompile Include="3843.cc" />
     <ClCompile Include="3844.cc" />
+    <ClCompile Include="4001.cc" />
     <ClCompile Include="4054.cc" />
     <ClCompile Include="main.cc" />
   </ItemGroup>
