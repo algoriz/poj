@@ -5,16 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="input">
-      <UniqueIdentifier>{12795191-605e-4a32-94d5-f9b3a119db88}</UniqueIdentifier>
-      <ParseFiles>false</ParseFiles>
-      <Extensions>txt</Extensions>
-    </Filter>
-    <Filter Include="output">
-      <UniqueIdentifier>{d1e86cfc-0739-4115-9174-11255dc231b5}</UniqueIdentifier>
-      <ParseFiles>false</ParseFiles>
-      <Extensions>txt</Extensions>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="1002.cc">
@@ -50,49 +40,5 @@
     <ClCompile Include="4001.cc">
       <Filter>source</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="input\1002.txt">
-      <Filter>input</Filter>
-    </Text>
-    <Text Include="input\1059.txt">
-      <Filter>input</Filter>
-    </Text>
-    <Text Include="input\1060.txt">
-      <Filter>input</Filter>
-    </Text>
-    <Text Include="input\1093.txt">
-      <Filter>input</Filter>
-    </Text>
-    <Text Include="output\1002.txt">
-      <Filter>output</Filter>
-    </Text>
-    <Text Include="output\1059.txt">
-      <Filter>output</Filter>
-    </Text>
-    <Text Include="output\1060.txt">
-      <Filter>output</Filter>
-    </Text>
-    <Text Include="output\1093.txt">
-      <Filter>output</Filter>
-    </Text>
-    <Text Include="input\3843.txt">
-      <Filter>input</Filter>
-    </Text>
-    <Text Include="output\3843.txt">
-      <Filter>output</Filter>
-    </Text>
-    <Text Include="input\3842.txt">
-      <Filter>input</Filter>
-    </Text>
-    <Text Include="output\3842.txt">
-      <Filter>output</Filter>
-    </Text>
-    <Text Include="output\3844.txt">
-      <Filter>output</Filter>
-    </Text>
-    <Text Include="input\3844.txt">
-      <Filter>input</Filter>
-    </Text>
   </ItemGroup>
 </Project>

@@ -89,22 +89,6 @@
     <ClCompile Include="4054.cc" />
     <ClCompile Include="main.cc" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="input\1002.txt" />
-    <Text Include="input\1059.txt" />
-    <Text Include="input\1060.txt" />
-    <Text Include="input\1093.txt" />
-    <Text Include="input\3842.txt" />
-    <Text Include="input\3843.txt" />
-    <Text Include="input\3844.txt" />
-    <Text Include="output\1002.txt" />
-    <Text Include="output\1059.txt" />
-    <Text Include="output\1060.txt" />
-    <Text Include="output\1093.txt" />
-    <Text Include="output\3842.txt" />
-    <Text Include="output\3843.txt" />
-    <Text Include="output\3844.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
